@@ -1,0 +1,87 @@
+﻿@model IEnumerable<BeautyCentersProject.Models.CentersService>
+
+@{
+    ViewBag.Title = "خدمات المركز";
+    Layout = "~/Views/Shared/_CenterAdminLayout.cshtml";
+}
+
+<h2>جميع خدمات المركز</h2>
+
+<p class="mb-2">
+    @Html.ActionLink("إضافة خدمة جديدة للمركز", "createService", null, new { @class = "btn btn-primary" })
+</p>
+<br />
+<table class="table table-striped">
+    <tr>
+        <th class="text-right">
+            اسم الخدمة
+        </th>
+        <th class="text-right">
+            سعر الخدمة
+        </th>
+        <th class="text-right">
+            وصف الخدمة
+        </th>
+        <th class="text-right">
+            مدة الخدمة
+        </th>
+        <th class="text-right">
+            صورة الخدمة
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Service.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstimatedTime)
+        </td>
+        <td>
+            <img src="~/Content/Images/@item.Image" alt="@item.Service.Name" title="@item.Service.Name" style="width:100px;height:70px;" />
+        </td>
+        
+        <td>
+            @Html.ActionLink("تعديل الخدمة", "EditService", new { id=item.ID }, new { @class = "btn btn-default" }) |
+            @Html.ActionLink("مسح الخدمة", "DeleteService", new { id = item.ID }, new { @class = "btn btn-default" })
+
+            @*<button type="button" class="btn btn-default" data-toggle="modal" data-target="#@item.ID">
+                مسح الخدمة
+            </button>*@
+            <!-- The Modal -->
+            @*<div class="modal" id="@item.ID">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">مسح الخدمة</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            هل تريد مسح خدمة @item.Service.Name بالفعل ؟
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">لا</button>
+                            <a href="/CenterAdmin/DeleteService/@item.ID" class="btn btn-danger">نعم</a>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+        </td>
+    </tr>
+}
+
+</table>

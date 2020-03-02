@@ -1,0 +1,100 @@
+﻿@model BeautyCentersProject.ViewModel.centerDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .divApprovied {
+            width: 50%;
+            text-align: center;
+            margin: 10px auto;
+        }
+
+    </style>
+}
+<h2>بيانات المركز</h2>
+
+@Html.ActionLink("الرجوع للخلف", "getCenters")
+
+
+<div class="col-md-12">
+    <div class="divApprovied">
+        <select class="btn btn-primary" data-val="true" data-val-required="The selectApprovied field is required." id="selectApprovied" name="selectApprovied" onchange="getCenterInfo(this,@Model.Center.ID)">
+            <option selected="selected" value="0">بيانات المركز</option>
+            <option value="1">خدمات المركز</option>
+            <option value="2">موظفين المركز</option>
+        </select>
+    </div>
+</div>
+
+<div id="Centers">
+    <table class="table table-striped mt-4">
+        <tr>
+            <th class="text-right">
+                @Html.DisplayName("اسم المركز")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("المحافظة")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("نوع المركز")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("وقت الإنشاء")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("الوصف")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("العنوان")
+            </th>
+        </tr>
+
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.City.City1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.ServiceType.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.UpdatedDate)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Center.Address)
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        function getCenterInfo(e,centerID) {
+
+            $.ajax({
+                url: "/Admin/centerInfo?centerFilter=" + e.value + "&centerID=" + centerID,
+                type: "GET",
+                contentType: "html",
+                success: function (response) {
+                    $("#Centers").empty();
+                    $("#Centers").append(response);
+                },
+                error: function () {
+
+                }
+            });
+        }
+    </script>
+    
+}

@@ -1,0 +1,253 @@
+﻿@model BeautyCentersProject.ViewModel.serviceCenterAdminVM
+
+@{
+    ViewBag.Title = "createService";
+    Layout = "~/Views/Shared/_CenterAdminLayout.cshtml";
+    SelectList serviceList = new SelectList(Model.services, "ID", "Name");
+}
+
+@section styles{
+    <style>
+        #infoService{
+            display:none;
+        }
+    </style>    
+}
+<div class="row" style="margin:20px;">
+
+    <div class="col-lg-5"style="margin-bottom:20px;">
+        @Html.ActionLink("الرجوع للخدمات", "getServices")
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-5" style="float:right !important">
+
+            <div class="form-horizontal">
+
+                <div class="form-group">
+                    @Html.Label("اختر الخدمة", htmlAttributes: new { @class = "col-md-5" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(model => model.services.FirstOrDefault().ID, serviceList, "اختر الخدمة", new { @class = "form-control", onchange = "dropChange(this)" })
+                    </div>
+                </div>
+                <div id="infoService" class="form-group">
+                    <label for="DescriptionServ" class="col-md-5">وصف للخدمة</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control" rows="3" name="DescriptionServ" id="DescriptionServ"></textarea>
+                    </div>
+                    <label for="Price" class="col-md-5">سعر الخدمة</label>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" id="Price" name="Price" autocomplete="off" />
+                    </div>
+                    <label for="EstimatedTime" class="col-md-5">مدة الخدمة ( بالدقائق )</label>
+                    <div class="col-md-10">
+                        <input class="form-control" type="number" id="EstimatedTime" name="EstimatedTime" autocomplete="off" />
+                    </div>
+                    <label for="image" class="col-md-5">صورة للخدمة</label>
+                    <div class="col-md-10">
+                        <input class="form-control" type="file" id="image" name="image" accept='image/*' autocomplete="off" />
+                    </div>
+                    <div class="col-md-10">
+                        <button id="addBtn" class="btn btn-primary" style="margin-top:20px" onclick="addService()">إضافة الخدمة للمركز</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="services" class="col-md-6" style="float:right !important">
+            <table id="table" class="table table-striped">
+                <thead id="table-head">
+                    <tr>
+                        <th class="text-right">رقم الخدمة</th>
+                        <th class="text-right">الخدمة</th>
+                        <th class="text-right">سعرها</th>
+                        <th class="text-right">وصفها</th>
+                        <th class="text-right">مدة الخدمة</th>
+                        <th class="text-right"></th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    @foreach (var item in Model.centerServiceList)
+                    {
+                        <tr>
+                            <td>@item.ServiceID</td>
+                            <td>@item.Service.Name</td>
+                            <td>@item.Price</td>
+                            <td>@item.Description</td>
+                            <td>@item.EstimatedTime</td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button class="btn btn-success" onclick="sendServices()">تأكيد حفظ الخدمات</button>
+        </div>
+    }
+</div>
+
+@section scripts{
+    
+    <script>
+        var selectedServiceName;
+        var selectedServiceID = 0;
+
+        var serviceList = new Array();
+
+        function dropChange(e) {
+            selectedServiceID = e.value;
+            selectedServiceName = e.options[e.selectedIndex].text;
+
+            if (e.options[e.selectedIndex].text != "اختر الخدمة") {
+                document.getElementById("infoService").style.display = "block";
+            }
+            else {
+                document.getElementById("infoService").style.display = "none";
+            }
+
+        }
+
+        function addService() {
+            "use strict";
+            event.preventDefault();
+            var selectedPrice = document.getElementById("Price").value;
+            var selectedDescription = document.getElementById("DescriptionServ").value;
+            var selectedEstimatedTime = document.getElementById("EstimatedTime").value;
+            var selectedImage = document.getElementById("image").value;
+            if (selectedServiceID == 0) {
+                alert("من فضلك اختر الخدمة");
+                return false;
+            }
+            if (document.getElementById("DescriptionServ").value == "") {
+                alert("من فضلك ادخل وصف للخدمة");
+                return false;
+            }
+
+            if (document.getElementById("Price").value == "" || document.getElementById("Price").value <= 0) {
+                alert("من فضلك ادخل سعر الخدمة صحيحا");
+                return false;
+            }
+            if (document.getElementById("EstimatedTime").value == "" || document.getElementById("EstimatedTime").value <= 0) {
+                alert("من فضلك ادخل وقت الخدمة صحيحا");
+                return false;
+            }
+
+            if (document.getElementById("image").value == "") {
+                alert("من فضلك اختر صورة للخدمة");
+                return false;
+            }
+
+            var rows = document.getElementsByTagName("tr");
+            for (var i = 1; i < rows.length; i++) {
+                var cellID = rows[i].cells[0].innerHTML;
+                if (selectedServiceID == cellID) {
+                    alert("هذه الخدمة تم إضافتها بالفعل")
+                    return false;
+                }
+            }
+            var tableBody = document.getElementById("table-body");
+            var serviceID = document.createElement("td");
+            var serviceName = document.createElement("td");
+            var servicePrice = document.createElement("td");
+            var serviceDescription = document.createElement("td");
+            var serviceTime = document.createElement("td");
+            var serviceDelete = document.createElement("td");
+            var row = document.createElement("tr");
+
+            serviceID.innerHTML = selectedServiceID;
+            serviceName.innerHTML = selectedServiceName;
+            servicePrice.innerHTML = selectedPrice;
+            serviceDescription.innerHTML = selectedDescription;
+            serviceTime.innerHTML = selectedEstimatedTime;
+            serviceDelete.innerHTML = "<button class=btn btn-default id= delete onclick=deleteService(this)>حذف</button>";
+
+            row.appendChild(serviceID);
+            row.appendChild(serviceName);
+            row.appendChild(servicePrice);
+            row.appendChild(serviceDescription);
+            row.appendChild(serviceTime);
+            row.appendChild(serviceDelete);
+
+            tableBody.appendChild(row);
+            var dropdown = document.getElementById("ID");
+            dropdown.selectedIndex = 0;
+            document.getElementById("Price").value = "";
+            document.getElementById("DescriptionServ").value = "";
+            document.getElementById("EstimatedTime").value = "";
+            document.getElementById("image").value = "";
+
+            document.getElementById("services").style.display = "block";
+            document.getElementById("infoService").style.display = "none";
+
+            var arrOfService = new Array();
+
+            arrOfService.push(selectedServiceID);
+            arrOfService.push(selectedServiceName);
+            arrOfService.push(selectedDescription);
+            arrOfService.push(selectedPrice);
+            arrOfService.push(selectedEstimatedTime);
+            arrOfService.push(selectedImage);
+
+            serviceList.push(arrOfService);
+
+        }
+        function deleteService(e) {
+            event.preventDefault();
+            var row = e.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+
+            var rows = document.getElementsByTagName("tr");
+            if (rows.length <= 1) {
+                document.getElementById("services").style.display = "none";
+            }
+        }
+        function sendServices() {
+            event.preventDefault();
+            if (serviceList.length <= 0) {
+                alert("من فضلك اختر الخدمات اولا");
+            }
+            else {
+                var parameters = { "arrayList": serviceList };
+                $.ajax({
+                    url: "/CenterAdmin/createTable",
+                    type: "POST",
+                    data: JSON.stringify(parameters),
+                    contentType: 'application/json',
+                    traditional: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+                        document.getElementById("services").style.display = "none";
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        document.getElementById("services").style.display = "block";
+                        alert("حدث خطأ");
+                        //location.reload(true);
+                    }
+                });
+            }
+        }
+        $(document).ready(function () {
+            $("#image").change(function () {
+                var formData = new FormData();
+                var totalFiles = document.getElementById("image").files.length;
+                for (var i = 0; i < totalFiles; i++) {
+                    var file = document.getElementById("image").files[i];
+                    formData.append("image", file);
+                }
+                $.ajax({
+                    type: "POST",
+                    url: '/CenterAdmin/Upload',
+                    data: formData,
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false
+                });
+            });
+        });
+    </script>
+}

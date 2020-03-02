@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Markazi+Text" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cairo" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", false)
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm justify-content-center mynavbar">
+        <!-- Links -->
+        <div id="logo">
+
+            <a class="navbar-brand" href="/Home/Index" style="margin-right:0px;">
+                <img src="~/Content/Images/logo_transparent (1).png" id="logosize" />
+            </a>
+        </div>
+
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler mr-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            @*<span class="navbar-toggler-icon"></span>*@
+            <i class="fas fa-bars" style="color:#01ae90;"></i>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            @*<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link  mylink"
+                       href="/Home/Contact">
+                        <img src="~/Content/Images/plus.svg" class="svgsize" />
+                        إضافة مركز تجميل
+
+                    </a>
+
+                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle mylink " href="#" id="navbardrop" data-toggle="dropdown">
+                            @User.Identity.Name
+                        </a>
+                        <div class="dropdown-menu">
+                            @if (User.IsInRole("Client"))
+                            {
+
+                                <a class="dropdown-item mylink" href="/Orders/GetOrders/@User.Identity.Name">
+                                    مواعيدى
+                                </a>
+
+                            }
+                            <br />
+                            <a class="dropdown-item mylink" href="/Account/Setting/@User.Identity.Name">الاعدادات</a>
+                            <br />
+                            <a class="dropdown-item mylink" href="/Account/Logout">تسجيل خروج</a>
+                        </div>
+                    </li>
+
+                }
+                else
+                {
+
+
+                    <li class="nav-item hideInfo">
+                        <a class="nav-link mylink" href="/Account/Login">
+                            <img src="~/Content/Images/LogIN.svg" class="svgsize" />
+                            دخول
+                        </a>
+                    </li>
+
+                    <li class="nav-item hideInfo">
+                        <a class="nav-link mylink" href="/Account/ClientRegisteration">
+                            <img src="~/Content/Images/add-user.svg" class="svgsize" />
+                            انضم الآن
+                        </a>
+                    </li>
+                    
+                }
+            </ul>*@
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="nav navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item hideInfo">
+                        <a class="nav-link mylink" href="/BeautyAdmin/Index">
+                            <img src="~/Content/Images/add-user.svg" class="svgsize" />
+                            الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item hideInfo">
+                        <a class="nav-link mylink" href="/CenterAdmin/getServices">
+                            <img src="~/Content/Images/add-user.svg" class="svgsize" />
+                            الخدمات
+                        </a>
+                    </li>
+                    <li class="nav-item hideInfo">
+                        <a class="nav-link mylink" href="/CenterAdmin/getEmployess">
+                            <img src="~/Content/Images/add-user.svg" class="svgsize" />
+                            الموظفين
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                            @User.Identity.Name
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/Account/Setting/@User.Identity.Name">Setting</a>
+                            <br />
+                            <a class="dropdown-item" href="/Account/Logout">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            }
+        </div>
+
+
+    </nav>
+
+    <div id="containbody" class="container-fluid body-content text-center">
+        @RenderBody()
+        <hr />
+
+        <footer class="page-footer font-small bg-dark pt-4 bg-primary">
+            <div class="footer">
+                <div class="footer_content">
+                    <div class="footer_logo">
+                        <a href="/Home/Index">
+                            <img class="flogo" src="~/Content/Images/logo_transparent (1).png" id="logosize" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer_links">
+                        <div class="col">
+                            <h5 class="footerheader " style="color:white">سياستنا</h5>
+
+                            <a style="color:#01ae90;" href="/Home/policy" class="footerlink ">الشروط وسياسة الخصوصية</a><br>
+                        </div>
+
+                        <div class="col">
+                            <h5 class="footerheader " style="color:white">تواصل معنا</h5>
+                            <a style="color:#01ae90;" href="/Home/Contact" class="footerlink ">اعرف كيف تتواصل معنا</a><br>
+                        </div>
+
+                        <div class="col">
+                            <h5 class="footerheader " style="color:white">من نحن</h5>
+                            <a href="/Home/About" style="color:#01ae90;" class="footerlink ">اعرف عنا اكثر</a><br>
+                        </div>
+                    </div>
+
+                </div>
+                <div style="clear: both;"></div>
+                <hr style="color:white;" />
+            </div>
+        </footer>
+
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script>
+      $(document).ready(function(){
+        $("#customButton").click(function(){
+          $("#span1").toggleClass("firstSpan");
+          $("#span2").toggleClass("secondSpan");
+          $("#span3").toggleClass("thirdSpan");
+
+          $("#Panel").toggleClass("NewPanel");
+
+        });
+
+      })
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,138 @@
+﻿@model List<BeautyCentersProject.Models.Status>
+@{
+    SelectList statusList = new SelectList(Model, "ID", "Status1");
+}
+
+<div dir="rtl">
+    <div id="calender" class="col-12"></div>
+    <div id="calender2" class="col-12"></div>
+
+    <div class="modal fade in" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            @*<div id="myModal" class="modal bg-secondry" >
+                <div class="modal-dialog">*@
+            <div class="modal-content px-5">
+                <div class="modal-header" style="padding:5px; background-color:#00ffff">
+                    <button type="button" class="close danger" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">
+                        <span id="eventTitle">تفاصيل الطلب</span>
+                    </h4>
+                </div>
+                <div class="modal-body " style="margin:0px;">
+                    <div id="pDetails"></div>
+                    <div class="card-body table-striped">
+                        <table class="table table-borderless table-sm" style="border:none;margin:0px;">
+                            <thead>
+                                <tr>
+                                    <th scope="row" dir="rtl">إسم العميل:</th>
+                                    <td id="clientName"></td>
+                                    <th scope="row">رقم الطلب:</th>
+                                    <td id="orderId"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">وقت البدء:</th>
+                                    <td id="startTime"></td>
+                                    <th scope="row">وقت الانتهاء:</th>
+                                    <td id="endTime"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">حالة الطلب:</th>
+                                    <td id="state"></td>
+                                    <th scope="row">السعر الإجمالى</th>
+                                    <td class="badge-info" id="totalPrice"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row px-3">
+                        <div class="col-lg-10">
+                            <div class="card">
+                                <div class="card-body table-striped bg-secondry">
+                                    <table class="table table-hover table-sm" style="margin-bottom: 0px;">
+                                        <thead>
+                                            <tr style="font-weight:bold;font-size:1.5rem;">
+                                                <td>الخدمة</td>
+                                                <td>السعر</td>
+                                                <td>الموظف</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="orderDetails"></tbody>
+                                    </table>
+                                </div>
+                                <div class="row" id="replayStatus">
+                                    <span class="col-4" style="width:40%;padding:0px;">
+                                        @Html.DropDownListFor(
+                                                s=>s.FirstOrDefault().ID,
+                                                statusList as SelectList,"الرد على الطلب",
+                                                htmlAttributes:new {
+                                                    @id ="STID",
+                                                    @class ="form-control",
+                                                    @onchange = "replayChanged(this.value)"
+                                                })
+                                    </span>
+                                    <span id="statuError" class="alert alert-danger alert-dismissible fade in hide m-1" style="margin-bottom:0px;">
+                                        <strong>خطأ!</strong> الرجاء اختيار الموظف لكل خدمة قبل تأكيد الطلب.
+                                    </span>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="margin:0px;padding:3px;" >
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">إغلاق النافذة</button>
+                    <button id="btnSave" type="button" class="btn btn-success" disabled="disabled">حفظ</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="unselectCancel"></div>
+    <!-- start       select offer hours modal-->
+    <div id="offerModal" class="modal fade in p-3" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content px-5">
+
+                <div class="modal-header">
+                    <button type="button" class="close p-3" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">
+                        <span>عرض مواعيد الطلب </span>
+                    </h4>
+                </div>
+                <div class="modal-body ">
+                    <div class="card-body">
+                        <table class="table table-borderless table-sm" style="border:none;margin-bottom: 0px;">
+                                <thead>
+                                    <tr>
+                                        <th class="col-4" id="offerOrderId"></th>
+                                        <th class="col-3" id="offerOrdertitle"></th>
+                                        <th class="col-5" scope="row">
+                                            <button class="btn-group btn btn-secondary" id="btnAddOffer" onclick="addOfferStartTime()">إضافة موعد</button>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="col-2 text-center">#</th>
+                                        <th class="col-4 text-center">البدء</th>
+                                        <th class="col-4 text-center">الانتهاء</th>
+                                        <th class="col-2 text-center">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="offersBody"></tbody>
+                            </table>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق النافذة</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- end       select offer hours modal-->
+</div>

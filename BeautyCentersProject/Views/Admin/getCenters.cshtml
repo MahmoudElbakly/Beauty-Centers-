@@ -1,0 +1,134 @@
+﻿@model BeautyCentersProject.ViewModel.beautyCenterViewModel
+
+@{
+    ViewBag.Title = "جميع مراكز التجميل";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles{
+    <style>
+        .divApprovied {
+            width: 50%;
+            text-align: center;
+            margin: 10px auto;
+        }
+
+        #selectApprovied {
+            width: 40%;
+            font-size: large;
+            font-family: tahoma;
+        }
+    </style>
+}
+<br />
+<div class="mt-4"><br /></div>
+
+<div class="col-md-12">
+    <div class="divApprovied">
+        @*@Html.EnumDropDownListFor(m => Model.selectApprovied, new { @class = "btn btn-primary", onchange = "getApprovied(this)" })*@
+        <select class="btn btn-primary" data-val="true" data-val-required="The selectApprovied field is required." id="selectApprovied" name="selectApprovied" onchange="getApprovied(this)">
+            <option selected="selected" value="0">جميع المراكز</option>
+            <option value="1">المراكز التي تم قبولها</option>
+            <option value="2">المراكز التي تم رفضها</option>
+        </select>
+    </div>
+</div>
+
+<div id="Centers">
+    <table class="table table-striped mt-4">
+        <tr>
+            <th class="text-right">
+                @Html.DisplayName("اسم المركز")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("وقت الإنشاء")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("المحافظة")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("الحالة")
+            </th>
+            <th class="text-right">
+                @Html.DisplayName("قبول / رفض")
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.centerList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City.City1)
+                </td>
+                @{
+                    if (item.IsApproved)
+                    {
+                        <td>تم قبول المركز</td>
+                    }
+                    else
+                    {
+                        <td> رفض المركز</td>
+                    }
+                }
+
+                <td>
+                    @Html.EnumDropDownListFor(m => item.Approvied, new { @class = "btn btn-success", onchange = "changeStatus(this,'" + item.ID + "')" })
+                </td>
+                <td>
+                    @Html.ActionLink("التفاصيل", "Details", new { id = item.ID })
+                </td>
+            </tr>
+                    }
+
+    </table>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/Ajax")
+    <script>
+        function changeStatus(e, centerID) {
+            console.log(e.value);
+            if (e.value != 0) {
+                $.ajax({
+                    url: "/Admin/centerApprovied?approvied=" + e.value + "&centerID=" + centerID,
+                    type: "POST",
+                    //data: JSON.stringify({ 'Options': someData }),
+                    //dataType: "json",
+                    traditional: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function () {
+
+                        location.reload(true);
+                    },
+                    error: function () {
+                        location.reload(true);
+                    }
+                });
+            }
+        }
+
+        function getApprovied(e) {
+            console.log(e.value);
+            $.ajax({
+                url: "/Admin/filterCenter?centerFilter=" + e.value,
+                type: "GET",
+                contentType: "html",
+                success: function (response) {
+                    $("#Centers").empty();
+                    $("#Centers").append(response);
+                },
+                error: function () {
+                    
+                }
+            });
+        }
+    </script>
+
+}

@@ -1,0 +1,132 @@
+﻿@model BeautyCentersProject.ViewModel.orderViewModel
+@{
+    ViewBag.Title = "GetOrders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="OrderPage">
+<div class="text-right">
+    <h1 class="d-inline-block"><span class="">مواعيدى</span></h1><h4 class="d-inline-block mr-2"><i class="fas fa-calendar-check text-info"></i></h4>
+</div>
+<div class="container text-center p-2">
+    <table class="table table-striped table-hover">
+        <thead class=" table-info text-light">
+            <tr class="">
+                <th>اسم المركز</th>
+                <th>عنوان المركز</th>
+                <th>تاريخ الطلب </th>
+                <th>موعد الطلب</th>
+                <th>تكلفة الطلب</th>
+                <th>حالة الطلب</th>
+                <th> الخدمات</th>
+                <th>الغاء الموعد</th>
+            </tr>
+        </thead>
+        @{
+
+            foreach (var VARIABLE in Model.Orders)
+            {
+                <tbody class="">
+                    <tr>
+                        <td>@VARIABLE.BeautyCenter.Name</td>
+                        <td>@VARIABLE.BeautyCenter.Address</td>
+                        <td>@VARIABLE.StartTime.Date.ToShortDateString()</td>
+                        <td>@VARIABLE.StartTime.ToShortTimeString()</td>
+                        <td>@VARIABLE.TotalPrice</td>
+                        <td>@VARIABLE.Status.Status1<span class="status" style="color:@VARIABLE.Status.Color">&bull;</span></td>
+                        <td>
+                            @{
+                                foreach (var item in VARIABLE.OrderServiceEmployees)
+                                {
+                                    <div class="text-info">
+                                        @item.Service.Name|
+                                    @{
+                                        if (item.EmployeeID != null)
+                                        {
+                                            <span class="text-dark">@item.Employee.Name</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-dark">لم يتم تحديد الموظف</span>
+                                        }
+                                    }
+
+                                </div>
+                            }
+                            }
+                        </td>
+                        @if (@VARIABLE.StatusID != 3)
+                        {
+                            <td><a href="/Orders/CancelOrder/@VARIABLE.ID/@User.Identity.Name" onclick="CancelOrder(@VARIABLE.ID)"><i class="fas fa-times-circle text-danger"></i> الغاء الموعد</a></td>
+
+                        }
+
+                    </tr>
+                </tbody>
+
+            }
+
+        }
+    </table>
+</div>
+<div class="text-right"><h3>المواعيد المقترحه للحجز الخاص بك</h3></div>
+@{
+    if (Model.Offers.Count > 0)
+    {
+        foreach (var VARIABLE in Model.Orders)
+        {
+            if (VARIABLE.Offers.Count > 0)
+            {
+                <div class="text-right">
+                    <table class="table table-info">
+                        <thead>
+                            <tr>
+                                <th>الطلب الخاص بك</th>
+                                <th>المواعيد المتاحه</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h4>اسم المركز</h4><span>@VARIABLE.BeautyCenter.Name</span><br />
+                                    <h4>تاريخ الموعد المطلوب</h4><span>@VARIABLE.StartTime.ToShortDateString()</span><br />
+                                    <h4>ساعة الموعد المطلوب</h4><span>@VARIABLE.StartTime.ToShortTimeString()</span>
+                                </td>
+                                <td>
+                                    @foreach (var item in VARIABLE.Offers)
+                                    {
+                                        <div class="border-bottom pb-2">
+                                            <h5 class="d-inline-block">التاريخ:</h5><span class="">@item.StartTime.ToShortDateString()</span><br />
+                                            <h5 class="d-inline-block">الساعه:</h5><span>@item.StartTime.ToShortTimeString()</span><br />
+                                            <a href="/Orders/AcceptOffer/@item.ID/@VARIABLE.ID/@User.Identity.Name" class="btn btn-info text-light"> الموافقه على الموعد</a>
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+
+        }
+
+    }
+    else
+    {
+        <div class="alert alert-info text-center"><h4>لا توجد مواعيد مقترحه</h4></div>
+    }
+}
+</div>
+    @section scripts{
+        <script>
+                //function CancelOrder(orderID) {
+
+                //    $.ajax({
+                //        type: "Get",
+                //        url: `/Orders/CancelOrder/${orderID}`,
+                //        data: { id: orderID },
+                //        success:
+                //    };
+                //}
+        </script>
+    }

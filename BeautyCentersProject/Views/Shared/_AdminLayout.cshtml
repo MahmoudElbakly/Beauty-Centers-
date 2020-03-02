@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header" style="float:left;">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse" style="float:right; direction:ltr;">
+                <ul class="nav navbar-nav" flex-direction:unset">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+                                @User.Identity.Name
+                            </a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="/Account/Setting/@User.Identity.Name">Setting</a>
+                                <br />
+                                <a class="dropdown-item" href="/Account/Logout">Logout</a>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+
+                        <li>@Html.ActionLink("أشترك الآن", "ClientRegisteration", "Account")</li>
+                        <li>@Html.ActionLink("دخول", "Login", "Account")</li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("الخدمات", "getServices", "Service")</li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="container-fluied body-content">
+        @RenderBody()
+        <hr />
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

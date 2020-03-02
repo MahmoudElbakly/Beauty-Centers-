@@ -1,0 +1,107 @@
+﻿@model IEnumerable<BeautyCentersProject.Models.Service>
+
+@{
+    ViewBag.Title = "جميع الخدمات";
+    //Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>جميع الخدمات</h2>
+
+<p class="mb-2">
+    @Html.ActionLink("إضافة خدمة جديدة", "Create",null, new { @class = "btn btn-primary" })
+</p>
+
+<div class="form-group">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+        <input type="text" id="Search"  placeholder="ابحث هنا عن خدمة" class="form-control" />
+    </div>
+</div>
+
+<table class="table table-striped mt-2" >
+    <tr>
+        <th class="text-right">
+            اسم الخدمة
+        </th>
+        <th class="text-right">
+            صورة الخدمة
+        </th>
+        <th class="text-right">
+            تعديل / مسح الخدمة
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr class="Search">
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            <img src="~/Content/Images/@item.Image" alt="@item.Name" title="@item.Name" style="width:100px;height:70px;" />
+        </td>
+        <td>
+            @Html.ActionLink("تعديل الخدمة", "Edit", new { id = item.ID }, new { @class = "btn btn-default" })|
+            @Html.ActionLink("مسح الخدمة", "Delete", new { id=item.ID }, new { @class = "btn btn-default" })
+
+            @*<button type="button" class="btn btn-default" data-toggle="modal" data-target="#@item.ID">
+                مسح الخدمة
+            </button>*@
+            <!-- The Modal -->
+            <div class="modal" id="@item.ID">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">مسح الخدمة</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            هل تريد مسح خدمة @item.Name بالفعل ؟
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">لا</button>
+                            @*<button type="button" class="btn btn-danger" data-dismiss="modal">نعم</button>*@
+                            <a href="/Service/Delete/@item.ID" class="btn btn-danger">نعم</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+
+    </tr>
+}
+
+</table>
+@*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Open modal
+</button>*@
+
+@section scripts{
+
+<script>
+    $(document).ready(function () {
+        function Contains(text_one, text_two) {
+            if (text_one.indexOf(text_two) != -1) {
+                return true;
+            }
+        }
+            $('#Search').keyup(function () {
+                console.log("hhh")
+                var searchText = $("#Search").val().toLowerCase();
+                $(".Search").each(function () {
+                    if (!Contains($(this).text().toLowerCase(), searchText)) {
+                        $(this).hide();
+                    }
+                    else {
+                        $(this).show();
+                    }
+                });
+            });
+        });
+</script>
+}

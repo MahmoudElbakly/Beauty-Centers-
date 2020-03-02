@@ -1,0 +1,69 @@
+﻿@model List<BeautyCentersProject.Models.Service>
+@{
+    List<int> SRVIDS = (List<int>)Session["SRVIDS"];
+
+}
+
+<div id="filtersection">
+
+    <div id="accordion ">
+        <div id="card1" class="card">
+            <div id="filterbysrv">
+                <i class="fas fa-filter Color1 pt-2 pl-2 pr-3"></i>
+
+                <span class="Color1 pl-2 pr-2 fonts"> حدد بحثك</span>
+            </div>
+            <div id="cardheader" class="card-header bg-light">
+
+                <a class="card-link fonts " data-toggle="collapse" href="#collapseOne" style="color:#ae457e;">
+                    الخدمات
+                </a>
+            </div>
+
+            @{ foreach (var item in Model)
+                {
+
+
+                    <div id="collapseOne" class="collapse show" dir="rtl">
+
+                        <div class="card-body">
+
+                            <!-- Default unchecked -->
+                            <div @*class="custom-control custom-checkbox "*@>
+
+                                @if (SRVIDS != null)
+                                {
+                                    if (SRVIDS.Count != 0 && SRVIDS.Contains(item.ID))
+                                    {
+                                        <input type="checkbox" id="@item.Name" value="@item.ID" onclick="filter(this.value)" checked>
+                                        <label  style="margin-bottom: 0 !important;"  for="@item.Name"></label>
+                                        @Html.Label(item.Name, htmlAttributes: new { @id = "label", @class = "pr-4" })
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" id="@item.Name" value="@item.ID" onclick="filter(this.value)">
+                                        <label  style="margin-bottom: 0 !important;" for="@item.Name"></label>
+                                        @Html.Label(item.Name, htmlAttributes: new { @id = "label", @class = "pr-4" })
+                                    }
+                                }
+                                else
+                                {
+                                    <input type="checkbox"  id="@item.Name" value="@item.ID" onclick="filter(this.value)">
+                                    <label  style="margin-bottom: 0 !important;"  for="@item.Name"></label>
+                                    @Html.Label(item.Name, htmlAttributes: new { @id = "label", @class = "pr-4" })
+                                }
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+</div>

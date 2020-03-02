@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="0b07ab270a2f4fe6b6ff7875aa4a7c27" Name="Diagram1">
+        <EntityTypeShape EntityType="BeautyCenterDBModel.C__MigrationHistory" Width="1.5" PointX="5.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.AspNetRole" Width="1.5" PointX="1.5" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.AspNetUserClaim" Width="1.5" PointX="6" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.AspNetUserLogin" Width="1.5" PointX="6" PointY="15.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.AspNetUser" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.BeautyCenter" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.CenterAdmin" Width="1.5" PointX="8.25" PointY="11.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.CentersService" Width="1.5" PointX="5.25" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.CenterWorksHour" Width="1.5" PointX="5.25" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.City" Width="1.5" PointX="0.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Client" Width="1.5" PointX="6" PointY="11.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.ClientCenterComment" Width="1.5" PointX="8.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.ClientRate" Width="1.5" PointX="11.25" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.EmployeeDoService" Width="1.5" PointX="13.5" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Employee" Width="1.5" PointX="11.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Offer" Width="1.5" PointX="13.5" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Order" Width="1.5" PointX="11.25" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.OrderServiceEmployee" Width="1.5" PointX="13.5" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Service" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.ServiceType" Width="1.5" PointX="0.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.Status" Width="1.5" PointX="9" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BeautyCenterDBModel.sysdiagram" Width="1.5" PointX="8.75" PointY="1.125" IsExpanded="true" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_CenterAdmin_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Client_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_BeautyCenters_City" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_BeautyCenters_ServiceType" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_CenterAdmin_BeautyCenters" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_CentersServices_BeautyCenters" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_CenterWorksHours_BeautyCenters" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_ClientCenterComment_BeautyCenters" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Orders_BeautyCenters" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_CentersServices_Services" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_ClientRate_CentersServices1" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Client_City" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_ClientCenterComment_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_ClientRate_Client1" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Orders_Client" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_EmployeeDoServices_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_EmployeeDoServices_Services" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_OrderServiceEmployee_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Offer_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_Orders_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_OrderServiceEmployee_Ordesr" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.FK_OrderServiceEmployee_Services" ManuallyRouted="false" />
+        <AssociationConnector Association="BeautyCenterDBModel.AspNetUserRoles" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

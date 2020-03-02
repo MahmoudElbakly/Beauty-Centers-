@@ -1,0 +1,94 @@
+﻿
+@model BeautyCentersProject.ViewModel.BookingViewModel
+<form action="/Booking/ConfirmingBooking/" method="post" dir="rtl" class="text-danger text-right"
+      onsubmit="testCheckedList(event)">
+    <div class="alert alert-danger text-center d-none">
+        <strong></strong>من فضلك حدد خدمه واحده على الاقل
+    </div>
+
+    <div class="d-inline-block custom-control">
+        <label class="" for="@Model.StartTime">حدد الوقت والتاريخ المناسب</label>
+        <input type="datetime-local" style="width: 242px" class="form-control d-inline-block" required value="" name="StartTime" id="datepicker">
+    </div>
+    <!--Start of services-->
+    <table class="table text-center">
+        <thead class="table-light">
+        <tr>
+            <th>اسم الخدمه</th>
+            <th>سعر الخدمه</th>
+            <th> وقت الخدمه</th>
+            <th>اختيار الخدمه</th>
+            <th>اختر الموظف</th>
+        </tr>
+        </thead>
+        @{
+
+            foreach (var VARIABLE in Model.CentersServices)
+            {
+                <tbody>
+                <tr class="table-primary">
+                    <td><label>@VARIABLE.Service.Name</label></td>
+                    <td>@VARIABLE.Price</td>
+                    <td>@VARIABLE.EstimatedTime</td>
+                    <td>
+                        <input type="checkbox"  onchange="ischicked(this)"  id="@VARIABLE.Service.ID" name="ServicesID" value="@VARIABLE.Service.ID" >
+                        <label style="margin-bottom: 0 !important;" for="@VARIABLE.Service.ID"></label>
+                    </td>
+                     @*<td> <input type="checkbox" onchange="ischicked(this)" class=""
+                                id="@VARIABLE.Service.ID" name="ServicesID" value="@VARIABLE.Service.ID"/></td>*@
+                    <td>
+                        <select class="custom-select" name="Employee">
+                            <option></option>
+                            @foreach (var item in VARIABLE.Service.EmployeeDoServices)
+                            {
+                                <option value="@item.Employee.ID" name="Employees">@item.Employee.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>       
+                </tbody>
+            }
+        }
+    </table>
+   
+   
+    <input type="hidden" value="@Model.CenterID" name="CenterID" />
+    <input type="hidden" value="@Model.ClientID" name="ClientID" />
+    <input type="hidden" value="@Model.ClientPhone" name="ClientPhone"/>
+    <input type="submit" class="btn btn-success mx-auto" value="تأكيد الحجز" id="btn" />
+
+</form>
+@*<script>
+    var dateOfToday = moment().format("YYYY-MM-DDTHH:mm")
+    var dayoftomrow = moment().add(1, 'days');
+    var fu = dayoftomrow.format("YYYY-MM-DDTHH:mm");
+    console.log(fu);
+        $("#datepicker").attr({
+            "min": fu,
+            "value": fu 
+        });
+        console.log(dateOfToday);
+
+    var counter = 0;
+    function ischicked(e) {
+        console.log(counter);
+        if (e.checked == true) {
+            counter++;
+        } else {
+            counter--;
+        }
+        console.log(counter);
+    }
+    
+    function testCheckedList(e) {
+
+        if (counter < 1) {
+            event.preventDefault();
+            $(".alert").removeClass("d-none")
+
+        } else {
+            $(".alert").addClass("d-none")
+        }
+        
+    }
+</script>*@

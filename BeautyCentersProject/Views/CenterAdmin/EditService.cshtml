@@ -1,0 +1,73 @@
+﻿@model BeautyCentersProject.Models.CentersService
+
+@{
+    ViewBag.Title = "EditService";
+    Layout = "~/Views/Shared/_CenterAdminLayout.cshtml";
+}
+
+<h2>تعديل خدمة @Model.Service.Name</h2>
+
+<div class="col-lg-5" style="margin-bottom:20px;">
+    @Html.ActionLink("الرجوع للخدمات", "getServices")
+</div>
+
+@using (Html.BeginForm("EditService", "CenterAdmin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CenterID, "اسم المركز", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.BeautyCenter.Name, Model.BeautyCenter.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CenterID, "اسم الخدمة", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.ServiceID,Model.Service.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, "وصف الخدمة", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Price" class="col-md-5">سعر الخدمة</label>
+            <div class="col-md-10">
+                <input class="form-control" type="number" id="Price" name="Price" autocomplete="off" required/>
+                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="EstimatedTime" class="col-md-5">مدة الخدمة ( بالدقائق )</label>
+            <div class="col-md-10">
+                <input class="form-control" type="number" id="EstimatedTime" name="TimeMinutes" autocomplete="off" required/>
+                @Html.ValidationMessageFor(model => model.EstimatedTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input class="form-control" type="file" id="image" name="file" accept='image/*' autocomplete="off"/>
+                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="تعديل" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}

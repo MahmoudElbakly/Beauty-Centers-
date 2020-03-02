@@ -1,0 +1,95 @@
+﻿@using PagedList.Mvc
+@model  PagedList.IPagedList<BeautyCentersProject.Models.BeautyCenter>
+@{ 
+
+    BeautyCentersProject.ViewModel.SearchValuesViewModel SearchVal =
+      (BeautyCentersProject.ViewModel.SearchValuesViewModel)Session["SearchValues"];
+
+}
+@{ foreach (var item in Model)
+    {
+        <div id="cenetrs" class="media border p-3 mt-3">
+            <div class="col-3">
+                <img src="/Content/Images/@item.Logo" alt="@item.Name" class="mr-3 mt-3 rounded-circle" style="width:100px;">
+            </div>
+            <div class="media-body col-9 d-inline-block">
+                <div>
+                    <h3>مركز @item.Name</h3>
+                    <p>@item.Description</p>
+                    <div class="rating">
+                        @{ for (int i = 0; i < 5; i++)
+                            {
+
+                                if (i < item.TotalRate)
+                                {
+                                    <span class="fa fa-star checked"></span>
+                                }
+                                else
+                                { <span class="fa fa-star"></span> }
+
+
+                            }
+
+
+                        }
+                    </div>
+                </div>
+
+                <div>
+                    <p><i class="fas fa-map-marker-alt fa-1x " style="color:cornflowerblue;"></i> &nbsp; &nbsp;@item.Address</p>
+                    <p><a href="/CenterIfromation/AboutCenter?CenterID=@item.ID"> للمزيد من التفاصيل والخدمات</a></p>
+                </div>
+                <div class="text-center ">
+                    <a id="Booking" href="" class="btn col-lg-5" onclick="BookingNow(@item.ID ,'@User.Identity.Name')" data-toggle="modal" data-target="#myModal">احجز الان</a>
+                </div>
+
+                <div class="modal p-0" id="myModal" dir="rtl" style="padding-right:200px ">
+                    <div class="modal-dialog " style="max-width: 800px">
+
+                        <!-- Modal content-->
+                        <div class="modal-content text-light " style="background-color: #202224">
+                            <div class="modal-header bg-info text-center">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                <h4 class="modal-title text-center text-right">مركز تجميل @item.Name </h4>
+
+                            </div>
+                            <div class="modal-body bg-light" id="BookingModalBody">
+                                <p></p>
+                            </div>
+                            <div class="modal-footer bg-info">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+                            }
+}
+<div id="pagination" class="pagination" style="padding-right:30%;">
+    @*@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)*@
+    @Html.PagedListPager(Model, page => Url.Action("CenetrsDetails", new { page = page, CID = SearchVal.CityID, TypeID = SearchVal.TypeID, ID = SearchVal.CenterID }
+))
+</div>
+
+@section scripts{
+    
+    <script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   </script>
+    }

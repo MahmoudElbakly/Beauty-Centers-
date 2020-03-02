@@ -1,0 +1,31 @@
+﻿@model BeautyCentersProject.ViewModel.SearchViewModel
+@{
+
+}
+
+
+
+<div class="text-right" id="Search">
+
+    @using (Html.BeginForm("CenetrsDetails", "Search", FormMethod.Post, new { id = "SIC" }))
+    {
+        @Html.AntiForgeryToken()
+
+
+        <div class="d-flex justify-content-center mb-3" id="SearchRow">
+
+            @Html.DropDownListFor(c => c.BeautyCentersCities.FirstOrDefault().CID, ViewBag.CityName as SelectList, "اختار المحافظة", new { @id = "City", @class = " selection form-control", @onchange = "CityCenters(this.value)" })
+
+            @Html.DropDownListFor(c => c.TypeOfService.FirstOrDefault().TypeID, ViewBag.CenterType as SelectList, "  اختار النوع ", new { @id = "Type", @class = " selection form-control" })
+
+            @Html.DropDownListFor(c => c.Centers.FirstOrDefault().ID, ViewBag.Centers as SelectList, " اختار مركز التجميل ", new { @id = "Center", @class = " selection  form-control" })
+
+
+            <button id="searchbtn" class="btn SRHfonts" type="submit" onclick="GetSearchVal()"><i class="fas fa-search "></i> ابحث</button>
+
+        </div>
+    }
+
+</div>
+
+

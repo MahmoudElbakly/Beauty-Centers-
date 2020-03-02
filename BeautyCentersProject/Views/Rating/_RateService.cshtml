@@ -1,0 +1,80 @@
+﻿@model BeautyCentersProject.Models.ClientRate
+
+
+<style>
+   #stars img:hover{
+            cursor: pointer;
+        }
+</style>
+<div class="Container CRating">
+
+    <div id="stars" data-rating="0">
+        <img class="star" src="~/Content/Images/empty_star.png" onclick="">
+        <img class="star" src="~/Content/Images/empty_star.png" onmouseover="">
+        <img class="star" src="~/Content/Images/empty_star.png" onmouseover="">
+        <img class="star" src="~/Content/Images/empty_star.png" onmouseover="">
+        <img class="star" src="~/Content/Images/empty_star.png" onmouseover="">
+    </div>
+    <span id="showCount" class="star-rating"></span>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let stars = document.querySelectorAll(".star");
+        stars.forEach(function (star) {
+            star.addEventListener("click", setRating);
+        });
+        let rating = parseInt(document.getElementById("stars").getAttribute("data-rating"));
+        let target = stars[rating - 1];
+        if (target >= 0) {
+            target.dispatchEvent(new MouseEvent("click"));
+        }
+    });
+
+    function setRating(ev) {
+        let image = ev.currentTarget;
+        let stars = document.querySelectorAll(".star");
+        let match = false;
+        var num = 0;
+        stars.forEach(function (star, index) {
+            if (match) {
+                star.src = "/Content/Images/empty_star.png";
+            }
+            else {
+                star.src = "/Content/Images/Filled_star.png";
+            }
+
+            if (star === image) {
+                match = true;
+                num = index + 1;
+                console.log(num);
+            }
+
+
+        });
+        document.getElementById("stars").setAttribute("data-rating", num);
+        // document.getElementById("showCount").innerHTML = num + "/5";
+
+        $.ajax({
+            type: "POST",
+            url: `/Rating/RateService?ratevalue=${num}&CenterID=${}&serviceID=${}`,
+            data: param = "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: successFunc,
+            error: errorFunc
+        });
+
+        function successFunc(data, status) {     
+            alert(data);
+        }
+
+        function errorFunc() {
+            //alert('تم تسجيل');
+        }
+    
+
+    }
+
+</script>

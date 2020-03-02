@@ -1,0 +1,85 @@
+﻿@model BeautyCentersProject.ViewModel.EmployeeVM
+
+@{
+    ViewBag.Title = "تسجيل موظف جديد";
+    Layout = "~/Views/Shared/_CenterAdminLayout.cshtml";
+}
+
+<div class="col-lg-5" style="margin-bottom:20px;">
+    @Html.ActionLink("الرجوع لقائمة الموظفين", "getEmployess")
+</div>
+
+@using (Html.BeginForm("createEmployee", "CenterAdmin", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "checkService()"})) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>EmployeeVM</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name,"اسم الموظف", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <table class="table table-striped col-lg-5">
+            <tr>
+                <th class="text-right">
+                    اضافة الخدمة للموظف
+                </th>
+                
+            </tr>
+            @for(int i = 0; i < Model.ServiceCenterList.Count; i++)
+            {
+                <tr>
+                    <td>
+
+                        @Html.CheckBoxFor(m => Model.ServiceCenterList[i].isSelected, new { @class = "d-inline", id = Model.ServiceCenterList[i].ServiceID , onclick = "getService(this)"})
+                        <label for="@Model.ServiceCenterList[i].ServiceID">@Model.ServiceCenterList[i].Service.Name</label>
+                        @Html.HiddenFor(m => Model.ServiceCenterList[i].ServiceID) @Html.HiddenFor(m => Model.ServiceCenterList[i].Service.Name)
+                    </td>
+                </tr>
+            }
+        </table> 
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="تسجيل الموظف" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script>
+        var counter = 0;
+        function getService(e) {
+
+            if (counter < 0) {
+                counter = 0;
+            }
+            if (e.checked == true) {
+                counter++;
+            }
+            else {
+                counter--;
+            }
+            console.log(counter);
+        }
+
+        function checkService() {
+            if (document.getElementById("Name").value == "") {
+                return false;
+            }
+
+            if (counter < 1) {
+                event.preventDefault();
+                alert("من فضلك اختر علي الاقل خدمة واحدة لهذا الموظف")
+            }
+            
+        }
+    </script>
+    }

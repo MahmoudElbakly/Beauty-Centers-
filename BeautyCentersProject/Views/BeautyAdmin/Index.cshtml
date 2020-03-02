@@ -1,0 +1,489 @@
+﻿@model List<BeautyCentersProject.Models.Status>
+@{
+    ViewBag.Title = "Index";
+    //SelectList statusList = new SelectList(Model, "ID", "Status");
+}
+
+
+<h2>الصفحة الرئسية للمركز</h2>
+<div class="row d-flex" style="display:flex">
+    <div class=" col-lg-12">
+        <input type="button" class="btn btn-default col-3" onclick="FillCalenderWithOrders('@User.Identity.Name')" value="عرض الطلبات" />
+    </div>
+    <div class="display-2 alert-heading col-lg-6" id="msg" style="padding-top:5px"></div>
+    <div class="hide col-lg-3" id="colorMap" style="padding-top:5px;">
+        <ul class="list-unstyled list-inline">
+            @foreach (var status in Model)
+            {
+                <li style="background-color:@status.Color;  border-radius:25%;color:white;" >
+                    @status.Status1
+                    <img class="img-circle" />
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+@{
+
+    Html.RenderPartial("OrderCalender", Model);
+    //Html.RenderAction("OrderCalender", Model);
+}
+@*<div class="w-50">
+        @{
+            Html.RenderAction("GetCalenderByEmpID", "BeautyAdmin");
+        }
+    </div>*@
+
+@section Scripts{
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar-scheduler/1.9.3/scheduler.css" rel="stylesheet" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.print.css" rel="stylesheet" media="print" />
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/locale/ar-ly.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar-scheduler/1.9.3/scheduler.min.js"></script>
+
+
+    <script>
+
+        var orderID;
+        var orders = [];
+        var selectOfferTimeForOrder = false;
+        var defineOrdSrvEmp = []
+        var default_start = new Date();
+        function addOfferStartTime() {
+            $('#offerModal').modal('hide');
+            selectOfferTimeForOrder = true;
+        }
+
+        function FillCalenderWithOrders(userName) {
+            $('#calender').fullCalendar('destroy');
+            $('#calender2').hide();
+            $('#colorMap').removeClass('hide');
+            $('#calender').show();
+            $.ajax({
+                    type: "POST",
+                    url: "/BeautyAdmin/GetOrders",
+                    data: { 'userName': userName },
+                    success: function (data) {
+                        console.log('in FillCalenderWithOrders func');
+                        orders = [];
+                        $.each(data, function (i, ord) {
+                            orders.push({
+                                id: ord.id,
+                                totalPrice: ord.totalPrice,
+                                title: ord.clientName,
+                                Description: `${ord.status}`,
+                                start: moment(ord.start),//.format('YYYY-MM-DD '),
+                                end: moment(ord.end),//.format('YYYY-MM-DD'),
+                                color: ord.color
+                            });
+                        })
+                        console.log('order here ya ga3an')
+                        console.log(orders);
+                        GenerateCalender(orders, selectOfferTimeForOrder);
+                    },
+                    error: function (err) {
+                        alert('خطأ فى استدعاء الطلبات من قاعدة البيانات \n' + err);
+                    }
+                });
+        }
+        function GenerateCalender(orders, isSelectable) {
+            console.log(orders);
+            $('#calender').fullCalendar('destroy');
+            $('#calender').fullCalendar({
+                //contentHeight: 400,
+                allDaySlot: false,
+                schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+                isRTL: true,
+                locale: 'ar-ly',
+                aspectRatio: 3,
+                titleFormat: 'YYYY/MM/DD',
+               // selectable: true,
+               // unselectcancel: 'unselectcancel',
+               // selecthelper: true,
+                defaultView: 'month',//'agendaWeek',
+                //allDaySlot: false,
+                defaultDate: new Date(),
+                timeFormat: 'h(:mm)a',
+                header: {
+                    left: 'next,prev today',
+                    center: 'title',
+                    right: 'list,month,agendaWeek,basicDay'
+                },
+               // select: CalenderTimeSelect,
+               // dayClick: CalenderDayClick,
+                //eventLimit: true,
+                eventColor: 'gray',
+                events: orders,
+                eventClick: FillOrderData
+            });
+        }
+        function FillOrderData(selectedOrder) {  //, jsEvent, view) {
+            orderID = selectedOrder.id;
+            $('#clientName').html(selectedOrder.title);
+            $('#orderId').html(selectedOrder.id);
+            $('#startTime').html(selectedOrder.start.format("DD-MMM-YYYY HH:mm a"));
+            $('#endTime').html(selectedOrder.end.format("DD-MMM-YYYY HH:mm a"));
+            $('#state').html(selectedOrder.Description);
+            $('#totalPrice').html(selectedOrder.totalPrice);
+          //  $('#myModal #eventTitle').text(selectedOrder.title);
+            var $servicesRows = $('#orderDetails');
+            FillOrderServices(selectedOrder.id, selectedOrder.start.format());
+            $('#myModal').modal();
+            $('#replayStatus').show();
+
+        }
+        function FillOrderDataEmployee(selectedOrder) {  //, jsEvent, view) {
+            orderID = selectedOrder.id;
+            $('#clientName').html(selectedOrder.name);
+            $('#orderId').html(selectedOrder.id);
+            $('#startTime').html(selectedOrder.start.format("DD-MMM-YYYY HH:mm a"));
+            $('#endTime').html(selectedOrder.end.format("DD-MMM-YYYY HH:mm a"));
+            $('#state').html(selectedOrder.Description);
+            $('#totalPrice').html(selectedOrder.totalPrice);
+            $('#myModal #eventTitle').text(selectedOrder.title);
+            var $servicesRows = $('#orderDetails');
+            FillOrderServices(selectedOrder.id, selectedOrder.start.format());
+            $('#myModal').modal();
+            $('#replayStatus').hide();
+            $('#btnWorkHours').hide();
+
+        }
+        function GetOrdersInDay(userName, start) {
+            $('#myModal').modal('hide');
+            $('#calender').hide();
+            $('#calender2').show();
+            var ordersInDay = [];
+            $.ajax({
+                    type: "POST",
+                    url: "/BeautyAdmin/GetOrdersInDay",
+                    data: { 'userName': userName, 'start': start },
+                success: function (data) {
+                    console.log('data');
+                    console.log(data);
+                    var defaultDate;
+                    jQuery.each(data.ordersEmployee, function (i, ordEmps) {
+                        if (i==0) {
+                            defaultDate = moment(ordEmps.start1).format("YYYY-MM-DD");
+                            console.log('defaultDate in if');
+                            console.log(defaultDate);
+                        }
+                            ordersInDay.push({
+                                id: ordEmps.title,
+                                resourceId: ordEmps.resourceId,
+                                end: moment(ordEmps.end1).toISOString(),
+                                start: moment(ordEmps.start1).format(""),
+                                title: `${ordEmps.title} :رقم الطلب \n ${ordEmps.client} :اسم العميل`
+                            });
+                        });
+                    GC_EmpWorksOrdersInDay(data.employees, ordersInDay, defaultDate);
+                    },
+                    error: function () {
+                        alert('فشل فى تحميل الطلبات لهذا اليوم \n' + err);
+                    }
+                });
+        }
+        function GC_EmpWorksOrdersInDay(employees, orders1, defaultDate) {
+            console.log('default date here');
+            console.log(defaultDate);
+            $('#calender2').fullCalendar('destroy');
+            $('#calender2').fullCalendar({
+                allDaySlot: false,
+                defaultDate: defaultDate,
+                titleFormat: 'YYYY/MMM/DD',
+                defaultView: 'agendaDay',
+                selectable: true,
+                unselectCancel: 'unselectcancel',
+                selectHelper: true,
+                //plugins: ['dayGrid'],
+                //eventAfterRender: function (info) {
+                    //var tooltip = new Tooltip(info.el, {
+                    //    title: 'info.event.extendedProps.description',
+                    //    placement: 'top',
+                    //    trigger: 'hover',
+                    //    container: 'body'
+                    //});
+                    //$('#tooltip').text('my tool tip ' + info.el);
+                //},
+                schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+                header: {
+                    left: 'next,prev',
+                    center: 'title',
+                    right: ''//timelineDay'//,timelineWeek,timelineMonth'
+                },
+                resourceLabelText: 'الموظفين',
+                resources: employees,
+                events: orders1,
+                eventClick: FillOrderDataEmployee,
+                select: CalenderTimeSelect,
+            });
+        }
+        function AddNewOffer(ordId, start, end) {
+            orderID = ordId;
+            jQuery.ajax({
+                type: 'POST',
+                url: '/BeautyAdmin/AddOfferForOrder',
+                dataType: 'json',
+                data: { 'ordId': ordId, 'start': start, 'end': end },
+                success: function (dataAdded) {
+                    console.log('AddNewOffer state is ' + dataAdded.offerAdded);
+                    //$('#offerOrdertitle').text('Order id:' + ordId);
+                    //$('#offer1_start').text(moment(start));
+                    //$('#offer1_end').text(moment(end));
+                    FillOffers(ordId);
+                    $('#offerModal').modal();
+                },
+                error: function (errorThrown) {
+                    alert("خطأ!\n السيرفر لايستجيب لاضافة العرض للطلب المحدد.");
+                }
+            });
+        }
+        function FillOffers(order_ID) {
+            jQuery.ajax({
+                type: 'GET',
+                url: `/BeautyAdmin/GetOffersForOrder?ordId=${order_ID}`,
+                success: function (offers) {
+                    console.log('offers');
+                    console.log(offers);
+                    $('#offersBody').empty();
+                    $('#offerOrderId').text('الطلب #: '+order_ID)
+                    $.each(offers, function (i, offer) {
+                        var startDate = moment(offer.start).format('LLLL');
+                        var endDate = moment(offer.end).format('LLLL');
+                        $('#offersBody').append(`
+                                        <tr>
+                                            <td class="col-2 text-center">${offer.offerId}</td>
+                                            <td class="col-4">${startDate}</td>
+                                            <td class="col-4">${endDate}</td>
+                                            <td class="col-2">
+                                                <button class="btn btn-danger" onclick="DeleteOfferById(${offer.offerId})">X</button>
+                                            </td>
+                                        </tr>
+                            `);
+                    });
+                },
+                error: function () {
+                    alert("Error!\n can not get Offer From Database.");
+                }
+            });
+        }
+        function DeleteOfferById(id) {
+            if (confirm('تأكيد حذف العرض!')) {
+                $.ajax({
+                    type: 'GET',
+                    url: `/BeautyAdmin/DeleteOfferById?offId=${id}`,
+                    success: function (data) {
+                        console.log(data.deleted);
+                        if (data.deleted) {
+                            alert('تم حذف العرض!');
+                            FillOffers(orderID);
+                        } else {
+                            alert('خطأ! لم يتم حذف العرض!');
+                        }
+                    },
+                    error: function () {
+                        alert('خطأ فى السيرفر \nحاول مرة اخرى.');
+                    }
+                });
+            }
+        }
+        var offers = [];
+        function CalenderTimeSelect(startDate, endDate) {
+            if (selectOfferTimeForOrder) {
+                console.log('orderID');
+                console.log(orderID);
+                offers.push({
+                    OrderID: orderID,
+                    StartTime: startDate,
+                    EndTime: endDate
+                });
+                console.log(startDate.format());
+                AddNewOffer(orderID, startDate.format(), endDate.format());
+                selectOfferTimeForOrder = false;
+            } else {
+                $('#offerModal').modal();
+                console.log('selected ' + startDate + ' to ' + endDate.format());
+
+            }
+        }
+        function CalenderDayClick(date) {
+            console.log('selected date ' + date);
+            $('#offerModal').modal();
+            console.log('clicked ' + date.format());
+        }
+        function FillOrderServices(orderId, start) {
+            default_start = start;
+            jQuery.ajax({
+                type: 'GET',
+                url: "/BeautyAdmin/GetOrderServies?OID=" + orderId,
+                dataType: 'json', // ** ensure you add this line **
+                success: function (srvices) {
+                    console.log(srvices);
+                    $('#orderDetails').empty();
+                    var count = 0;
+                    jQuery.each(srvices, function (index, item) {
+
+                        defineOrdSrvEmp.push({ OrderID: orderId, ServiceID: item.srvId, EmployeeID: item.empId });
+                        if (item.empName != null) {
+                            $('#orderDetails').append(`<tr class="">
+                                                                    <td>${item.name}</td>
+                                                                    <td>${item.price}</td>
+                                                                    <td> ${item.empName}</td >
+                                                                </tr >`);
+                        }
+                        else {
+                            count++;
+                            $('#orderDetails').append(`<tr class=""><td>${item.name}</td><td>${item.price}</td><td id="asd${count}"></td></tr>`);
+                            fillSrvEmpsList(orderId, item.srvId, count);
+                        }
+                    });
+                    $('#orderDetails').append(`<tr class="" id="btnWorkHours">
+                                                <td>عرض مواعيد عمل الموظفين
+                                                <button class="btn btn-primary btn-sm"
+                                                    onclick="GetOrdersInDay('@User.Identity.Name', '${start}')">عرض
+                                                </button>
+                                                </td >
+                                                </tr>`);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error!\n can not Fill Order Services.");
+                }
+            });
+        }
+        function fillSrvEmpsList(ordId, srvId, count) {
+            jQuery.ajax({
+                type: 'GET',
+                url: `/BeautyAdmin/GetSrvEmployee?OID=${ordId}&SrvId=${srvId}`,
+                success: function (employees) {
+                    console.log(employees);
+                    var EmpSelect = '';
+                    EmpSelect += `<select class="form-control" onchange="assignEmp(${srvId},this.value)">
+                                        <option value="">اختر الموظف</option>`;
+                    jQuery.each(employees, function (index, emp) {
+                        EmpSelect += `<option value="${emp.ID}">${emp.Name}</option>`;
+                    });
+                    EmpSelect += '</select>';
+                    $(`#asd${count}`).append(EmpSelect);
+                },
+                error: function (err) {
+                    alert("خطأ!\n خطأ فى استدعاء الخدمات لهذا الطلب.\n"+err);
+                }
+            });
+        }
+        function assignEmp(serviceId, employeeId) {
+            jQuery.each(defineOrdSrvEmp, function (i, item) {
+                if (item.ServiceID == serviceId) {
+                    item.EmployeeID = Number(employeeId);
+                    console.log(item);
+                }
+            });
+            validiateSave(canSave);
+        }
+        var canSave = true;
+        var status_Id;
+        function replayChanged(statusId) {
+            if (orderID != null) {
+                status_Id = statusId;
+                if (statusId == 2) {
+                    canSave = true;
+                    console.log('defineOrdSrvEmp');
+                    console.log(defineOrdSrvEmp);
+                    $.each(defineOrdSrvEmp, function (i, item) {
+                        if (item.EmployeeID == null) {
+                            console.log(item);
+                            canSave = false;
+                            return false;
+                        }
+                    });
+                    validiateSave(canSave);
+                } else if (statusId == 3 || statusId == 1 ) {
+                    updateOrderStatus(statusId, orderID);
+                } else if (statusId == 4) {
+                    console.log('statusId == 4');
+                    $('#msg').text('اختر الموعد من جدول المواعيد');
+                    $('#offerModal').modal();
+                    SelectOfferForOrder();
+                }
+                else {
+                    $('#statuError').removeClass("show");
+                }
+            } else {
+                alert('خطأ !\n حدث خطأ فى استدعاء رقم الطلب.\n حاول مرة أخرى.');
+            }
+        }
+        function validiateSave(can_Save) {
+            if (can_Save) {
+                console.log('can save : true');
+                $('#statuError').removeClass("show");
+                $('#btnSave').removeAttr('disabled');
+            } else {
+                console.log('can save : false');
+                $('#statuError').addClass("show");
+                $("#STID").prop('selectedIndex', 0);
+            }
+        }
+        $('#btnSave').on('click', function () {
+            //validiateSave(canSave);
+            updateOrderStatus(status_Id, orderID);
+            console.log('defineOrdSrvEmp');
+            console.log(defineOrdSrvEmp);
+            if (updateOrderServicesEmployees(defineOrdSrvEmp)) {
+                alert('تم الحفظ بنجاح');
+            }
+
+        });
+        function updateOrderServicesEmployees(OrdSrvEmpList) {
+            $.ajax({
+                type: "POST",
+                url: '/BeautyAdmin/updateOrderServiceEmployee',
+                dataType: "JSON",
+                //    data: JSON.stringify({ paramName: info }),
+                data: { 'OrdSrvEmpList': OrdSrvEmpList },
+                success: function (data) {
+                    if (data.updated) {
+                        console.log("updateOrderServiceEmployee data updated: " + data.updated)
+                        return true;
+                    } else {
+                        alert('فشل فى تحيث حالة الرد على الطلب!' + err);
+                        console.log(data.error)
+                        return false;
+                    }
+                },
+                error: function (err) {
+                    alert('فشل فى استعداء السيرفر لتحيث حالة الرد على الطلب!' + err);
+                    return false;
+
+                }
+            });
+        }
+        function updateOrderStatus(statId, ordId) {
+            $.ajax({
+                    type: "POST",
+                    url: '/BeautyAdmin/UpdateOrderStatus',
+                    data: { 'statusId': statId, 'ordId': ordId },
+                    success: function (data) {
+                        console.log("asdsa " + data.updated)
+                        if (data.updated) {
+                            // location.reload(true);
+                            FillCalenderWithOrders('@User.Identity.Name');
+                            $('#myModal').modal('hide');
+                        } else {
+                            alert('فشل فى تحديث حالة الرد على الطلب!');
+                        }
+                    },
+                    error: function (err) {
+                        alert('فشل فى استعداء السيرفر لتحيث حالة الرد على الطلب!' + err);
+                    }
+             });
+        }
+        function SelectOfferForOrder() {
+            GetOrdersInDay('@User.Identity.Name', default_start);
+        }
+
+    </script>
+}
+

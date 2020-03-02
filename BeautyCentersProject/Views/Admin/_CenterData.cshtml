@@ -1,0 +1,49 @@
+﻿@model BeautyCentersProject.ViewModel.centerDetailsViewModel
+
+<table class="table table-striped mt-4">
+    <tr>
+        <th class="text-right">
+            @Html.DisplayName("اسم المركز")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("المحافظة")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("نوع المركز")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("وقت الإنشاء")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("الوصف")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("العنوان")
+        </th>
+    </tr>
+
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.Name)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.City.City1)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.ServiceType.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.UpdatedDate)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => modelItem.Center.Address)
+        </td>
+    </tr>
+
+</table>
+

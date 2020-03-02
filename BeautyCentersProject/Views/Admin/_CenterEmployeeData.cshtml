@@ -1,0 +1,30 @@
+﻿@model BeautyCentersProject.ViewModel.centerDetailsViewModel
+
+<table class="table table-striped mt-4">
+    <tr>
+        <th class="text-right">
+            @Html.DisplayName("اسم الموظف")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("خدماته")
+        </th>
+        
+    </tr>
+
+    @foreach (var item in Model.Employees)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td>
+                @foreach (var service in item.EmployeeDoServices)
+                {
+                    <span>@service.Service.Name</span><br />
+                }
+            </td>
+        </tr>
+    }
+
+</table>

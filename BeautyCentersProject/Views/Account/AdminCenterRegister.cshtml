@@ -1,0 +1,490 @@
+﻿@model BeautyCentersProject.ViewModel.AdminClientViewModel
+
+@{
+    ViewBag.Title = "بيانات لإضافة المركز";
+    SelectList cityList = new SelectList(Model.Cities, "CID", "City1");
+    SelectList typeList = new SelectList(Model.typeList, "TypeID", "Type");
+    SelectList serviceList = new SelectList(Model.services, "ID", "Name");
+
+}
+
+@section styles{
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        h3 {
+            text-align: center;
+        }
+        /* Mark input boxes that gets an error on validation: */
+        input.invalid {
+            background-color: #ffdddd;
+        }
+
+        /* Hide all steps by default: */
+        .tab {
+            display: none;
+        }
+
+            .tab label {
+                float: none !important;
+            }
+
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #prevBtn {
+            background-color: #bbbbbb;
+            width: 100px;
+        }
+
+        #nextBtn {
+            margin: 10px 15px;
+            width: 100px;
+        }
+        #services{
+            display:none;
+        }
+        #infoService{
+            display:none;
+        }
+    </style>
+}
+
+
+@using (Html.BeginForm("AdminCenterRegister", "Account", FormMethod.Post, new { enctype = "multipart/form-data", id= "regForm" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <br />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="tab">
+            <h3>بيانات المركز</h3>
+            <div class="form-group">
+                @Html.Label("اسم المركز", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.CenterName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CenterName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("اختر المحافظة", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.CityID, cityList, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("عنوان للمركز", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("نوع المركز", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Gender, typeList, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.typeList, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("وصف للمركز", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2", style = "width:100%; height: 70px" })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("شعار المركز", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    <input type="file" name="file" id="file" required accept='image/*' />
+                    @Html.ValidationMessageFor(model => model.Logo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3>بيانات المسؤل</h3>
+            <div class="form-group">
+                @Html.Label("الأسم بالكامل", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.AdminName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.AdminName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("اسم المستخدم", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("البريد الإلكتروني", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("الرقم القومي", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NID, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.NID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("رقم الموبايل", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("كلمة المرور", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("تأكيد كلمة المرور", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ConfirmPass, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ConfirmPass, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="tab">
+            <h3>من فضلك اختر خدمات المركز</h3>
+            <div class="row">
+                <div class="col-md-5" style="float:right !important">
+
+                    <div class="form-horizontal">
+                       
+                        <div class="form-group">
+                            @Html.Label("اختر الخدمة", htmlAttributes: new { @class = "col-md-5" })
+                            <div class="col-md-10">
+                                @Html.DropDownListFor(model => model.ServiceList.FirstOrDefault().serviceID, serviceList, "اختر الخدمة", new { @class = "form-control", onchange = "dropChange(this)" })
+                            </div>
+                        </div>
+                        <div id="infoService" class="form-group">
+                            <label for="DescriptionServ" class="col-md-5">وصف للخدمة</label>
+                            <div class="col-md-10">
+                                <textarea class="form-control" rows="3" name="DescriptionServ" id="DescriptionServ"></textarea>
+                            </div>
+                            <label for="Price" class="col-md-5">سعر الخدمة</label>
+                            <div class="col-md-10">
+                                <input class="form-control" type="number" id="Price" name="Price" autocomplete="off" />
+                            </div>
+                            <label for="EstimatedTime" class="col-md-5">مدة الخدمة ( بالدقائق )</label>
+                            <div class="col-md-10">
+                                <input class="form-control" type="number" id="EstimatedTime" name="EstimatedTime" autocomplete="off" />
+                            </div>
+                            <label for="image" class="col-md-5">صورة للخدمة</label>
+                            <div class="col-md-10">
+                                <input class="form-control" type="file" id="image" name="image" accept='image/*' autocomplete="off" />
+                            </div>
+                            <div class="col-md-10">
+                                <button id="addBtn" class="btn btn-primary" style="margin-top:20px" onclick="addService()">إضافة الخدمة للمركز</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="services" class="col-md-6" style="float:right !important">
+                    <table id="table" class="table table-striped">
+                        <thead id="table-head">
+                            <tr>
+                                <th class="text-right">رقم الخدمة</th>
+                                <th class="text-right">الخدمة</th>
+                                <th class="text-right">سعرها</th>
+                                <th class="text-right">وصفها</th>
+                                <th class="text-right">مدة الخدمة</th>
+                                <th class="text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                    <button class="btn btn-success" onclick="sendServices()">تأكيد حفظ الخدمات</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="button" id="nextBtn" onclick="nextPrev(1)" class="btn btn-primary col-md-offset-4">التالي</button>
+            <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="btn btn-default col-md-offset-4">السابق</button>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+            var counter = 0;
+            function addServices(e, ID) {
+                if (e.checked == true) {
+                    counter++;
+
+                }
+                else if (e.checked == false) {
+                    counter--;
+                }
+            }
+
+            var currentTab = 0; // Current tab is set to be the first tab (0)
+            showTab(currentTab); // Display the current tab
+            function showTab(n) {
+                debugger;
+                // This function will display the specified tab of the form ...
+                var x = document.getElementsByClassName("tab");
+                x[n].style.display = "block";
+                // ... and fix the Previous/Next buttons:
+                if (n == 0) {
+                    document.getElementById("prevBtn").style.display = "none";
+                } else {
+                    document.getElementById("prevBtn").style.display = "inline";
+                }
+                if (n == (x.length - 1)) {
+                    document.getElementById("nextBtn").innerHTML = "تسجيل المركز";
+                } else {
+                    document.getElementById("nextBtn").innerHTML = "التالي";
+                }
+            }
+
+            function nextPrev(n) {
+                var tabs = document.getElementsByClassName("tab");
+                //if (n == 1 && !validateForm())
+                //    return false;
+                tabs[currentTab].style.display = "none";
+                if (currentTab < (tabs.length)) {
+                    currentTab = currentTab + n;
+                    //if (currentTab == tabs.length) {
+                    //    currentTab = tabs.length - 1;
+                    //}
+                }
+                if ((currentTab) >= (tabs.length)) {
+                    if (serviceList.length <= 0) {
+                        alert("من فضلك اختر الخدمات اولا");
+                        currentTab = tabs.length - 1;
+                        showTab(currentTab);
+                        //return false;
+                    }
+                    else {
+                        document.getElementById("regForm").submit();
+                        currentTab = tabs.length - 1;
+                        //return false;
+                    }
+                }
+                //else {
+                //    showTab(currentTab);
+                //}
+                showTab(currentTab);
+            }
+
+            function validateForm() {
+                // This function deals with validation of the form fields
+                var x, y, i, valid = true;
+                x = document.getElementsByClassName("tab");
+                y = x[currentTab].getElementsByTagName("input");
+                // A loop that checks every input field in the current tab:
+                for (i = 0; i < y.length; i++) {
+                    // If a field is empty...
+                    if (y[i].value == "") {
+                        // add an "invalid" class to the field:
+                        y[i].className += " invalid";
+                        // and set the current valid status to false:
+                        valid = false;
+                    }
+                }
+                return valid; // return the valid status
+            }
+
+            var selectedServiceName;
+            var selectedServiceID = 0;
+
+            var serviceList = new Array();
+
+            function dropChange(e) {
+                console.log(e.value);
+                selectedServiceID = e.value;
+                console.log(e.options[e.selectedIndex].text);
+                selectedServiceName = e.options[e.selectedIndex].text;
+
+                if (e.options[e.selectedIndex].text != "اختر الخدمة") {
+                    console.log("OK");
+                    document.getElementById("infoService").style.display = "block";
+                    console.log(document.getElementById("infoService"));
+                }
+                else {
+                    document.getElementById("infoService").style.display = "none";
+                }
+
+            }
+
+            function addService() {
+                "use strict";
+                event.preventDefault();
+                var selectedPrice = document.getElementById("Price").value;
+                var selectedDescription = document.getElementById("DescriptionServ").value;
+                var selectedEstimatedTime = document.getElementById("EstimatedTime").value;
+                var selectedImage = document.getElementById("image").value;
+                if (selectedServiceID == 0) {
+                    alert("من فضلك اختر الخدمة");
+                    return false;
+                }
+                if (document.getElementById("DescriptionServ").value == "") {
+                    alert("من فضلك ادخل وصف للخدمة");
+                    return false;
+                }
+
+                if (document.getElementById("Price").value == "" || document.getElementById("Price").value <= 0) {
+                    alert("من فضلك ادخل سعر الخدمة صحيحا");
+                    return false;
+                }
+                if (document.getElementById("EstimatedTime").value == "" || document.getElementById("EstimatedTime").value <= 0) {
+                    alert("من فضلك ادخل وقت الخدمة صحيحا");
+                    return false;
+                }
+
+                if (document.getElementById("image").value == "") {
+                    alert("من فضلك اختر صورة للخدمة");
+                    return false;
+                }
+
+                var rows = document.getElementsByTagName("tr");
+                for (var i = 1; i < rows.length; i++) {
+                    var cellID = rows[i].cells[0].innerHTML;
+                    if (selectedServiceID == cellID) {
+                        alert("هذه الخدمة تم إضافتها بالفعل")
+                        return false;
+                    }
+                }
+                var tableBody = document.getElementById("table-body");
+                var serviceID = document.createElement("td");
+                var serviceName = document.createElement("td");
+                var servicePrice = document.createElement("td");
+                var serviceDescription = document.createElement("td");
+                var serviceTime = document.createElement("td");
+                var serviceDelete = document.createElement("td");
+                var row = document.createElement("tr");
+
+                serviceID.innerHTML = selectedServiceID;
+                serviceName.innerHTML = selectedServiceName;
+                servicePrice.innerHTML = selectedPrice;
+                serviceDescription.innerHTML = selectedDescription;
+                serviceTime.innerHTML = selectedEstimatedTime;
+                serviceDelete.innerHTML = "<button class=btn btn-default id= delete onclick=deleteService(this)>حذف</button>";
+
+                row.appendChild(serviceID);
+                row.appendChild(serviceName);
+                row.appendChild(servicePrice);
+                row.appendChild(serviceDescription);
+                row.appendChild(serviceTime);
+                row.appendChild(serviceDelete);
+
+                tableBody.appendChild(row);
+                var dropdown = document.getElementById("serviceID");
+                dropdown.selectedIndex = 0;
+                document.getElementById("Price").value = "";
+                document.getElementById("DescriptionServ").value = "";
+                document.getElementById("EstimatedTime").value = "";
+                document.getElementById("image").value = "";
+                
+                document.getElementById("services").style.display = "block";
+                document.getElementById("infoService").style.display = "none";
+
+                //for (var i = 0; i < arrOfService.length; i++) {
+                //    arrOfService.pop();
+                //}
+                var arrOfService = new Array();
+
+                arrOfService.push(selectedServiceID);
+                arrOfService.push(selectedServiceName);
+                arrOfService.push(selectedDescription);
+                arrOfService.push(selectedPrice);
+                arrOfService.push(selectedEstimatedTime);
+                arrOfService.push(selectedImage);
+
+                serviceList.push(arrOfService);
+
+            }
+
+            function deleteService(e) {
+                event.preventDefault();
+                var row = e.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+
+                var rows = document.getElementsByTagName("tr");
+                if (rows.length <= 1) {
+                    document.getElementById("services").style.display = "none";
+                }
+            }
+
+            function sendServices() {
+                event.preventDefault();
+                if (serviceList.length <= 0) {
+                    alert("من فضلك اختر الخدمات اولا");
+                }
+                else {
+                    var parameters = { "arrayList": serviceList };
+                    console.log(parameters);
+                    $.ajax({
+                        url: "/Account/createTable",
+                        type: "POST",
+                        data: JSON.stringify(parameters),
+                        contentType: 'application/json',
+                        traditional: true,
+                        contentType: "application/json; charset=utf-8",
+                        success: function () {
+                            alert("تم حفظ الخدمات")
+                            document.getElementById("services").style.display = "none";
+
+                            //location.reload(true);
+                        },
+                        error: function () {
+                            document.getElementById("services").style.display = "block";
+
+                            //location.reload(true);
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(function () {
+                $("#image").change(function () {
+                    var formData = new FormData();
+                    var totalFiles = document.getElementById("image").files.length;
+                    for (var i = 0; i < totalFiles; i++) {
+                        var file = document.getElementById("image").files[i];
+                        formData.append("image", file);
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: '/Account/Upload',
+                        data: formData,
+                        dataType: 'json',
+                        contentType: false,
+                        processData: false
+                    });
+                });
+            });
+    </script>
+}

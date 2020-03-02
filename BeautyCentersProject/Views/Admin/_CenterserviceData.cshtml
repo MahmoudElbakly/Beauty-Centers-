@@ -1,0 +1,39 @@
+﻿@model BeautyCentersProject.ViewModel.centerDetailsViewModel
+
+<table class="table table-striped mt-4">
+    <tr>
+        <th class="text-right">
+            @Html.DisplayName("نوع الخدمة")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("سعر الخدمة")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("وصف الخدمة")
+        </th>
+        <th class="text-right">
+            @Html.DisplayName("مدة الخدمة")
+        </th>
+    </tr>
+
+    @foreach (var item in Model.centerServices)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Service.Name)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstimatedTime)
+            </td>
+        </tr>
+    }
+
+</table>
+

@@ -1,0 +1,282 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<BeautyCentersProject.Models.BeautyCenter>
+@{
+    ViewBag.Title = "CenetrsDetails";
+
+    BeautyCentersProject.ViewModel.SearchValuesViewModel SearchVal =
+        (BeautyCentersProject.ViewModel.SearchValuesViewModel)Session["SearchValues"];
+
+}
+
+<div id="CentersDetails">
+    <div id="searchresult" class="col-12">
+
+
+        @{
+            Html.RenderAction("SearchForm", "Search");
+        }
+
+    </div>
+</div>
+<div class="container mt-5 text-right">
+    <div class="row">
+
+        <div class="col-3">
+            @{
+                Html.RenderAction("Filteration", "Search");
+            }
+        </div>
+
+        <div id="SearchCenters" class="col-9">
+
+
+            @{ foreach (var item in Model)
+                {
+                    <div id="cenetrs" class="media border p-3 mt-3">
+                        <div class="col-3 col-sm-4 pr-1">
+                            <img src="~/Content/Images/@item.Logo" alt="@item.Name" class="mr-3 mt-3 rounded-circle" style="width:100%;" >
+                        </div>
+                        <div class="media-body col-9 d-inline-block">
+                            <div>
+                                <h3>مركز @item.Name</h3>
+                                <br />
+                                <p>@item.Description</p>
+                               
+                                <div class="rating">
+                                    @{ for (int i = 0; i < 5; i++)
+                                        {
+
+                                            if (i < item.TotalRate)
+                                            {
+                                                <span class="fa fa-star checked"  style="color:#ffad00"></span>
+                                            }
+                                            else
+                                            { <span><i class="far fa-star" style="color:#ffad00"></i></span> }
+
+                                        }
+                                        if (item.TotalRate == null)
+                                        {
+                                            <p >انضم حديثاً</p>
+                                        }
+
+
+                                    }
+                                </div>
+                            </div>
+
+                            <div>
+                                <p><i class="fas fa-map-marker-alt fa-1x " style="color:cornflowerblue;"></i> &nbsp; &nbsp;@item.Address</p>
+                                <p><a href="/CenterIfromation/AboutCenter?CenterID=@item.ID"> للمزيد من التفاصيل والخدمات</a></p>
+                            </div>
+                            <div class="text-center ">
+                                <a id="Booking" href="" class="btn col-lg-5" onclick="BookingNow(@item.ID ,'@User.Identity.Name')" data-toggle="modal" data-target="#myModal">احجز الان</a>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="modal p-0" id="myModal" dir="rtl" style="padding-right:200px ">
+                        <div class="modal-dialog " style="max-width: 800px">
+
+                            <!-- Modal content-->
+                            <div class="modal-content text-light " style="background-color: #202224">
+                                <div class="modal-header bg-info text-center">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                                    <h4 class="modal-title text-center text-right">مركز تجميل @item.Name </h4>
+
+                                </div>
+                                <div class="modal-body bg-light" id="BookingModalBody">
+                                    <p></p>
+                                </div>
+                                <div class="modal-footer bg-info">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+
+
+
+                        }
+                        }
+
+                    </div>
+
+    </div>
+    <br />
+    <div id="pagination" class="pagination" style="padding-right:30%;">
+         @*@(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)*@
+         @Html.PagedListPager(Model, page => Url.Action("CenetrsDetails", new { page = page, CID = SearchVal.CityID, TypeID = SearchVal.TypeID, ID = SearchVal.CenterID }
+))
+    </div>
+</div>
+
+
+ 
+<br />
+<br /> 
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            var city = localStorage.getItem("City");
+            var type = localStorage.getItem("Type");
+            var center = localStorage.getItem("Center");
+            var CID = Number(city);
+            var TID = Number(type);
+            var CetID = Number(center);
+            if (CID > 0) {
+                $('#City').val(CID);
+            }
+
+            if (TID > 0) {
+                $('#Type').val(TID);
+            }
+            if (CetID > 0) {
+                $('#Center').val(CetID);
+            }
+
+            console.log(CID);
+            console.log(TID);
+            console.log(CetID);
+
+            var dateOfToday = moment().format("YYYY-MM-DDTHH:mm")
+            var dayoftomrow = moment().add(1, 'days');
+            var fu = dayoftomrow.format("YYYY-MM-DDTHH:mm");
+            console.log(fu);
+            $("#datepicker").attr({
+                "min": fu,
+                "value": fu
+            });
+            console.log(dateOfToday);
+        });
+        function CityCenters(value) {
+            $.ajax({
+                type: "GET",
+                url: "/Search/getcenters?CID=" + value,
+                dataType: 'json',
+                success: function (Data) {
+                    console.log(Data);
+
+                    $('#Center').empty();
+                    $('#Center').append($('<option>اختار مركز التجميل</option>'))
+                    jQuery.each(Data, function (index, item) {
+                        console.log(index);
+                        $('#Center').append($('<option value ="' + item.ID + '"> ' + item.Name + ' </option>'))
+                    }
+                        )
+                    $('#Center').html();
+                }
+
+            })
+
+
+        }
+
+        function GetSearchVal() {
+            var City = $('#City').val();
+            var Type = $('#Type').val();
+            var Center = $('#Center').val();
+            //if (Center = "اختار مركز التجميل") {
+            //    Center = "";
+            //}
+            localStorage.setItem("City", City);
+            localStorage.setItem("Type", Type);
+            localStorage.setItem("Center", Center);
+
+        }
+
+
+        function filter(value) {
+            $('#pagination').hide();
+            console.log(value);
+            var city = localStorage.getItem("City");
+            var type = localStorage.getItem("Type");
+            var center = localStorage.getItem("Center");
+            var CID = Number(city);
+            var TID = Number(type);
+            var CetID = Number(center);
+            if (CID > 0) {
+                $('#City').val(CID);
+            }
+
+            if (TID > 0) {
+                $('#Type').val(TID);
+            }
+            if (CetID > 0) {
+                $('#Center').val(CetID);
+            }
+
+            $.ajax({
+                url: `/Search/filterbyservice?CID=${CID}&TypeID=${TID}&ID=${CetID}&ServiceID=${value}`,
+                type: "POST",
+                contentType: 'application/json; charset=utf-8',
+                traditional: true,
+                success: function (response) {
+                    $('#SearchCenters').empty();
+
+                    $('#SearchCenters').html(response);
+
+                }
+
+            })
+
+
+        }
+        function BookingNow(beautyCenterID, uName) {
+            console.log(uName);
+            if (uName != "") {
+                $.ajax({
+                    type: "Get",
+                    url: `/Booking/BookingNow/${beautyCenterID}/${uName}`,
+                    data: { Centerid: beautyCenterID, userName: uName },
+                    success: function(response) {
+                        $("#BookingModalBody").html(response)
+                        $("#myModal").modal("show");
+                    }
+                })
+            } else {
+                $.ajax({
+                        type: "Get",
+                        url: `/logBooking/${beautyCenterID}`,
+                        data: { CenterID: beautyCenterID },
+                        success: function(response) {
+                            $("#BookingModalBody").html(response)
+                            $("#myModal").modal("show");
+                        }
+                    }
+                );
+
+            }
+    }
+   
+
+    var counter = 0;
+    function ischicked(e) {
+        console.log(counter);
+        if (e.checked == true) {
+            counter++;
+        } else {
+            counter--;
+        }
+        console.log(counter);
+    }
+
+    function testCheckedList(e) {
+        if (counter < 1) {
+            e.preventDefault();
+            $(".alert").removeClass("d-none")
+
+        } else {
+
+            $(".alert").addClass("d-none")
+        }
+
+    }
+     </script>
+
+}

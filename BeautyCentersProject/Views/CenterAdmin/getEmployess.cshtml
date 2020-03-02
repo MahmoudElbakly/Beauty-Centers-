@@ -1,0 +1,75 @@
+﻿@model IEnumerable<BeautyCentersProject.Models.Employee>
+
+@{
+    ViewBag.Title = "موظفين المركز";
+    Layout = "~/Views/Shared/_CenterAdminLayout.cshtml";
+}
+<h2>جميع موظفين المركز</h2>
+
+<p class="mb-2">
+    @Html.ActionLink("إضافة موظف جديد للمركز", "createEmployee", null, new { @class = "btn btn-primary" })
+</p>
+<br />
+<table class="table table-striped">
+    <tr>
+        <th class="text-right">
+            اسم الموظف
+        </th>
+        <th class="text-right">
+            خدمات الموظف
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @foreach (var serv in item.EmployeeDoServices)
+            {
+                <ul>
+                    @if (serv.IsDeleted == false)
+                    {
+                        <li>@Html.DisplayFor(modelItem => serv.Service.Name)</li>
+                    }
+                </ul>
+                 
+            }
+        </td>
+        <td>
+            @Html.ActionLink("تعديل الموظف", "EditEmployee", new { id = item.ID }, new { @class = "btn btn-default" }) |
+            @Html.ActionLink("مسح الموظف", "DeleteEmployee", new { id = item.ID }, new { @class = "btn btn-default" }) 
+            @*<button type="button" class="btn btn-default" data-toggle="modal" data-target="#@item.ID">
+                مسح الموظف
+            </button>*@
+            <!-- The Modal -->
+            @*<div class="modal" id="@item.ID">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">مسح الموظف</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            هل تريد مسح الموظف @item.Name بالفعل ؟
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">لا</button>
+                            <a href="/CenterAdmin/DeleteEmployee/@item.ID" class="btn btn-danger">نعم</a>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+        </td>
+    </tr>
+}
+
+</table>
